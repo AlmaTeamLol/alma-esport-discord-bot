@@ -1,0 +1,37 @@
+{
+  "name": "alma-esport-discord-bot",
+  "version": "1.0.0",
+  "description": "A Discord bot using Discord JS and Typescript for ALMA team management",
+  "keywords": [
+    "discord",
+    "discordjs",
+    "typescript"
+  ],
+  "homepage": "https://github.com/AlmaTeamLol/alma-esport-discord-bot#readme",
+  "bugs": {
+    "url": "https://github.com/AlmaTeamLol/alma-esport-discord-bot/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/AlmaTeamLol/alma-esport-discord-bot.git"
+  },
+  "license": "ISC",
+  "author": "iMeanBkli",
+  "type": "module",
+  "main": "dist/index.js",
+  "scripts": {
+    "dev": "tsx watch src/index.ts",
+    "start": "node .",
+    "build": "tsup src/index.ts --minify",
+    "deploy-commands": "tsx src/deploy-commands.ts"
+  },
+  "dependencies": {
+    "discord.js": "^14.25.1",
+    "dotenv": "^17.3.1"
+  },
+  "devDependencies": {
+    "tsup": "^8.5.1",
+    "tsx": "^4.21.0",
+    "typescript": "^5.9.3"
+  }
+}
