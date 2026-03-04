@@ -4,7 +4,14 @@ import ready from "@/listeners/ready";
 import interactionCreate from "@/listeners/interactionCreate";
 import { commands } from "@/commands";
 
-const client = new Client({ intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages, GatewayIntentBits.DirectMessages] });
+const client = new Client({
+    intents: [
+        GatewayIntentBits.Guilds,
+        GatewayIntentBits.GuildMessages,
+        GatewayIntentBits.DirectMessages,
+        GatewayIntentBits.MessageContent
+    ]
+});
 
 ready(client);
 

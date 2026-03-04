@@ -21,6 +21,6 @@
     }
   },
   "files": ["src/index.ts"],
-  "include": ["./**/*.ts"],
+  "include": ["./**/*.ts", "./src/image.d.ts"],
   "exclude": ["node_modules", "dist"]
 }

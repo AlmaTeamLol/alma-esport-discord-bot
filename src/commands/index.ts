@@ -1,7 +1,7 @@
 import * as ping from "@/commands/ping";
 import * as scriminfo from "@/commands/scriminfo";
 
-export const commands = {
+export const commands = [
     ping,
     scriminfo,
-};
+];

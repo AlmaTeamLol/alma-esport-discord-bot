@@ -1,14 +1,21 @@
-import { ContainerBuilder, ChannelType, ChatInputCommandInteraction, InteractionContextType, SlashCommandBuilder, ButtonStyle, ButtonBuilder, TextDisplayBuilder, MessageFlags } from "discord.js";
+import { ContainerBuilder, ChannelType, ChatInputCommandInteraction, InteractionContextType, SlashCommandBuilder, ButtonStyle, ButtonBuilder, TextDisplayBuilder, MessageFlags, SectionBuilder, ThumbnailBuilder } from "discord.js";
+
+const sectionThumbnail = new ThumbnailBuilder()
+    .setURL("https://i.postimg.cc/7hTkdLFj/ALMA-Esports-SCRIM-Logo.png");
 
 function createContainer(team: string, date: string, time: string, format: string, side: string, enemyMultiGg: string, almaMultiGg: string, drafter: string) {
     const scrimInfoTextDisplay = new TextDisplayBuilder()
-        .setContent(`SCRIM INFO | ${team}`);
+        .setContent(`**${team}** | SCRIM INFO`);
 
     const dateTextDisplay = new TextDisplayBuilder()
-        .setContent(`${date} | ${time}`);
+        .setContent(`**${date}** | **${time}**`);
 
     const formatTextDisplay = new TextDisplayBuilder()
         .setContent(`${format} | ALMA commence en ${side} side`);
+
+    const scrimInfoSectionDisplay = new SectionBuilder()
+        .addTextDisplayComponents(scrimInfoTextDisplay, dateTextDisplay, formatTextDisplay)
+        .setThumbnailAccessory(sectionThumbnail);
 
     const enemyMultiGgButton = new ButtonBuilder()
         .setLabel("Enemy Team Multi GG")
@@ -25,10 +32,9 @@ function createContainer(team: string, date: string, time: string, format: strin
         .setURL(drafter)
         .setStyle(ButtonStyle.Link);
 
-
     const container = new ContainerBuilder()
         .setAccentColor(0x0099ff)
-        .addTextDisplayComponents(scrimInfoTextDisplay, dateTextDisplay, formatTextDisplay)
+        .addSectionComponents(scrimInfoSectionDisplay)
         .addSeparatorComponents((separator) => separator)
         .addActionRowComponents((linkActionRow) => linkActionRow.addComponents(enemyMultiGgButton, almaMultiGgButton, drafterButton));
 
@@ -36,6 +42,8 @@ function createContainer(team: string, date: string, time: string, format: strin
 }
 
 export async function execute(interaction: ChatInputCommandInteraction) {
+    await interaction.deferReply();
+
     const team = interaction.options.get("team")?.value as string;
     const date = interaction.options.get("date")?.value as string;
     const time = interaction.options.get("time")?.value as string;
@@ -45,8 +53,7 @@ export async function execute(interaction: ChatInputCommandInteraction) {
     const almaMultiGg = interaction.options.get("alma-multi-gg")?.value as string;
     const drafter = interaction.options.get("drafter")?.value as string;
 
-    await interaction.deferReply();
-    await interaction.editReply({
+    await interaction.followUp({
         components: [createContainer(team, date, time, format, side, enemyMultiGg, almaMultiGg, drafter)],
         flags: MessageFlags.IsComponentsV2,
 
