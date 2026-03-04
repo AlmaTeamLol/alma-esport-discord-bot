@@ -1,0 +1,50 @@
+---
+description: Create a new slash command from template when €createcommand is in the prompt
+alwaysApply: true
+---
+
+# Create Command (€createcommand)
+
+When the user's prompt contains **€createcommand**, create a new slash command file and register it. Follow this workflow exactly.
+
+## 1. Gather required information
+
+Before creating any file, **ask the user** for these three values (if not already provided):
+
+- **filename** – Name of the new file in `src/commands/` (e.g. `mycommand` → `src/commands/mycommand.ts`). Do not include `.ts`.
+- **commandName** – Value passed to `setName()` (slash command name, e.g. `my-command`).
+- **commandDescription** – Value passed to `setDescription()` (short description shown in Discord).
+
+## 2. Create the command file
+
+Create `src/commands/<filename>.ts` with this **exact** content, replacing only the placeholders:
+
+```typescript
+import {
+    CommandInteraction,
+    SlashCommandBuilder
+} from "discord.js";
+
+export async function execute(interaction: CommandInteraction) {
+}
+
+export const data = new SlashCommandBuilder()
+    .setName("<commandName>")
+    .setDescription("<commandDescription>");
+```
+
+- Replace `<commandName>` with the user's **commandName** (e.g. `"my-command"`).
+- Replace `<commandDescription>` with the user's **commandDescription** (e.g. `"Does something useful"`).
+
+## 3. Update the commands index
+
+Edit `src/commands/index.ts`:
+
+1. Add an import: `import * as <filename> from "@/commands/<filename>";` (use the same `filename` as the new file, without `.ts`).
+2. Add `<filename>` to the `commands` array export (e.g. `commands = [..., <filename>];`).
+
+Keep existing imports and array entries; only add the new command.
+
+## Reference
+
+Template is based on `src/commands/scrimsearchmsg.ts`: minimal slash command with `execute`, `data` (SlashCommandBuilder with `setName` and `setDescription`), and Discord.js types.
