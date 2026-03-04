@@ -1,0 +1,21 @@
+---
+description: Transform :unicode: to real emoji when saving .ts files in src/commands/
+globs: src/commands/**/*.ts
+alwaysApply: false
+---
+
+# Emoji in command files
+
+When **saving or editing** any `.ts` file in `src/commands/`, **transform** every emoji unicode (format `:code:`) into the corresponding **real Unicode emoji** in that file.
+
+## Process
+
+- Use the **same process as when proposing emoji in strings**: edit the file directly and replace each `:code:` with the actual emoji character (e.g. `:crossed_swords:` → ⚔️). **No script**—apply in-place replacements in the file.
+- **Apply** in string literals, `.setContent()`, `.setEmoji()`, template literals, and anywhere else emoji appear.
+- **Dynamic codes** (e.g. `:${variable}_square:`) must be replaced with logic that yields the correct emoji (e.g. 🟦 / 🟥 from a variable), not left as text.
+
+## Common mappings
+
+`:crossed_swords:` → ⚔️ · `:date:` → 📅 · `:gear:` → ⚙️ · `:link:` → 🔗 · `:alarm_clock:` → 🕐 · `:white_check_mark:` → ✅ · `:envelope:` → ✉️ · `:index_pointing_at_the_viewer:` → 👈 · `:blue_square:` → 🟦 · `:red_square:` → 🟥`
+
+For other codes, use the standard Discord/Unicode shortcode or look up the character.
