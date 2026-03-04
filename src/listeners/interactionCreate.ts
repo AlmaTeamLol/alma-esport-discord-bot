@@ -1,4 +1,5 @@
 import { Client, Events, Interaction } from "discord.js";
+import { SlashCommand } from "@/types/command";
 
 export default (client: Client): void => {
     client.on(Events.InteractionCreate, async (interaction: Interaction) => {
@@ -6,7 +7,7 @@ export default (client: Client): void => {
             return;
         }
 
-        const command = interaction.client.commands.get(interaction.commandName);
+        const command: SlashCommand = interaction.client.commands.get(interaction.commandName);
 
         if (!command) {
             console.error(`Command ${interaction.commandName} not found`);
@@ -14,7 +15,7 @@ export default (client: Client): void => {
         }
 
         try {
-            await command.execute(interaction);
+            await command.commandExecute(interaction);
         } catch (error) {
             console.error(error);
             await interaction.followUp({ content: "There was an error while executing this command!", ephemeral: true });

@@ -12,6 +12,7 @@ import {
     ThumbnailBuilder
 } from "discord.js";
 import { config } from "@/config";
+import { SlashCommand } from "@/types/command";
 
 function createContainer(team: string, date: string, time: string, format: string, side: string, enemyMultiGg: string, almaMultiGg: string, drafter: string) {
     const scrimInfoTextDisplay = new TextDisplayBuilder()
@@ -58,7 +59,7 @@ function createContainer(team: string, date: string, time: string, format: strin
     return container;
 }
 
-export async function execute(interaction: ChatInputCommandInteraction) {
+async function execute(interaction: ChatInputCommandInteraction) {
     await interaction.deferReply();
 
     const team = interaction.options.get("team")?.value as string;
@@ -77,7 +78,7 @@ export async function execute(interaction: ChatInputCommandInteraction) {
     });
 }
 
-export const data = new SlashCommandBuilder()
+const data = new SlashCommandBuilder()
     .setName("scrim-info")
     .setDescription("Provides information about the current scrim.")
     .addStringOption(option => option.setName("team")
@@ -117,3 +118,9 @@ export const data = new SlashCommandBuilder()
         .setDescription("Channel where the scrim information will be played")
         .addChannelTypes(ChannelType.GuildText))
     .setContexts(InteractionContextType.Guild);
+
+export const scrimInfo: SlashCommand = {
+    commandData: data,
+    commandExecute: execute,
+    commandComponents: createContainer,
+};

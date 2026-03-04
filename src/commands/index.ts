@@ -1,9 +1,10 @@
-import * as ping from "@/commands/ping";
-import * as scriminfo from "@/commands/scriminfo";
-import * as scrimsearchmsg from "@/commands/scrimsearchmsg";
+import { ping } from "@/commands/ping";
+import { scrimInfo } from "@/commands/scriminfo";
+import { scrimSearchMsg } from "@/commands/scrimsearchmsg";
+import { SlashCommand } from "@/types/command";
 
-export const commands = [
+export const commands: SlashCommand[] = [
     ping,
-    scriminfo,
-    scrimsearchmsg,
+    scrimInfo,
+    scrimSearchMsg,
 ];

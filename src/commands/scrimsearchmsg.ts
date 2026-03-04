@@ -4,6 +4,7 @@ import {
     SlashCommandBuilder,
     TextDisplayBuilder
 } from "discord.js";
+import { SlashCommand } from "@/types/command";
 
 function createTextDisplay(date: string, time: string, format: string, elo: string) {
     return new TextDisplayBuilder()
@@ -46,3 +47,9 @@ export const data = new SlashCommandBuilder()
             { name: "Master+", value: "Master+" },
         )
         .setRequired(true));
+
+export const scrimSearchMsg: SlashCommand = {
+    commandData: data,
+    commandExecute: execute,
+    commandComponents: createTextDisplay,
+};
