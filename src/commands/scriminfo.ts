@@ -1,39 +1,56 @@
-import { ContainerBuilder, ChannelType, ChatInputCommandInteraction, InteractionContextType, SlashCommandBuilder, ButtonStyle, ButtonBuilder, TextDisplayBuilder, MessageFlags, SectionBuilder, ThumbnailBuilder } from "discord.js";
-
-const sectionThumbnail = new ThumbnailBuilder()
-    .setURL("https://i.postimg.cc/7hTkdLFj/ALMA-Esports-SCRIM-Logo.png");
+import {
+    ContainerBuilder,
+    ChannelType,
+    ChatInputCommandInteraction,
+    InteractionContextType,
+    SlashCommandBuilder,
+    ButtonStyle,
+    ButtonBuilder,
+    TextDisplayBuilder,
+    MessageFlags,
+    SectionBuilder,
+    ThumbnailBuilder
+} from "discord.js";
+import { config } from "@/config";
 
 function createContainer(team: string, date: string, time: string, format: string, side: string, enemyMultiGg: string, almaMultiGg: string, drafter: string) {
     const scrimInfoTextDisplay = new TextDisplayBuilder()
-        .setContent(`**${team}** | SCRIM INFO`);
+        .setContent(`⚔️ **${team}** | SCRIM INFO ⚔️`);
 
     const dateTextDisplay = new TextDisplayBuilder()
-        .setContent(`**${date}** | **${time}**`);
+        .setContent(`📅 **${date}** | **${time}**`);
 
+    const sideSquareEmoji = side.toLowerCase() === "blue" ? "🟦" : "🟥";
     const formatTextDisplay = new TextDisplayBuilder()
-        .setContent(`${format} | ALMA commence en ${side} side`);
+        .setContent(`⚙️ **${format}** | ALMA commence en ${sideSquareEmoji} **${side}** side`);
+
+    const sectionThumbnail = new ThumbnailBuilder()
+        .setURL("https://i.postimg.cc/7hTkdLFj/ALMA-Esports-SCRIM-Logo.png");
 
     const scrimInfoSectionDisplay = new SectionBuilder()
         .addTextDisplayComponents(scrimInfoTextDisplay, dateTextDisplay, formatTextDisplay)
         .setThumbnailAccessory(sectionThumbnail);
 
     const enemyMultiGgButton = new ButtonBuilder()
-        .setLabel("Enemy Team Multi GG")
+        .setLabel("Lien vers le Multi GG adverse")
         .setURL(enemyMultiGg)
-        .setStyle(ButtonStyle.Link);
+        .setStyle(ButtonStyle.Link)
+        .setEmoji("⚔️");
 
     const almaMultiGgButton = new ButtonBuilder()
-        .setLabel("ALMA Team Multi GG")
+        .setLabel("Lien vers votre Multi GG")
         .setURL(almaMultiGg)
-        .setStyle(ButtonStyle.Link);
+        .setStyle(ButtonStyle.Link)
+        .setEmoji("👈");
 
     const drafterButton = new ButtonBuilder()
-        .setLabel("Drafter")
+        .setLabel("Lien vers le Drafter")
         .setURL(drafter)
-        .setStyle(ButtonStyle.Link);
+        .setStyle(ButtonStyle.Link)
+        .setEmoji("🔗");
 
     const container = new ContainerBuilder()
-        .setAccentColor(0x0099ff)
+        .setAccentColor(config.theme.primaryColor)
         .addSectionComponents(scrimInfoSectionDisplay)
         .addSeparatorComponents((separator) => separator)
         .addActionRowComponents((linkActionRow) => linkActionRow.addComponents(enemyMultiGgButton, almaMultiGgButton, drafterButton));
