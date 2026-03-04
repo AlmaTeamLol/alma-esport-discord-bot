@@ -7,7 +7,7 @@ import {
 
 function createTextDisplay(date: string, time: string, format: string, elo: string) {
     return new TextDisplayBuilder()
-        .setContent(`📅 **${date}**\n🕐 ${time} CET\n⚔️ ${format}\n✅ **${elo} Elo**\n✉️ DM + OP.GG`);
+        .setContent(`📅 **${date}**\n🕐 ${time} CET\n⚔️ ${format}\n✅ **${elo}**\n✉️ DM + OP.GG`);
 }
 
 export async function execute(interaction: ChatInputCommandInteraction) {
