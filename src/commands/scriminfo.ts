@@ -14,7 +14,7 @@ import {
 import { config } from "@/config";
 import { SlashCommand } from "@/types/command";
 
-function createContainer(team: string, date: string, time: string, format: string, side: string, enemyMultiGg: string, almaMultiGg: string, drafter: string) {
+function createComponents(team: string, date: string, time: string, format: string, side: string, enemyMultiGg: string, almaMultiGg: string, drafter: string) {
     const scrimInfoTextDisplay = new TextDisplayBuilder()
         .setContent(`⚔️ **${team}** | SCRIM INFO ⚔️`);
 
@@ -72,7 +72,7 @@ async function execute(interaction: ChatInputCommandInteraction) {
     const drafter = interaction.options.get("drafter")?.value as string;
 
     await interaction.followUp({
-        components: [createContainer(team, date, time, format, side, enemyMultiGg, almaMultiGg, drafter)],
+        components: [createComponents(team, date, time, format, side, enemyMultiGg, almaMultiGg, drafter)],
         flags: MessageFlags.IsComponentsV2,
 
     });
@@ -122,5 +122,5 @@ const data = new SlashCommandBuilder()
 export const scrimInfo: SlashCommand = {
     commandData: data,
     commandExecute: execute,
-    commandComponents: createContainer,
+    commandComponents: createComponents,
 };

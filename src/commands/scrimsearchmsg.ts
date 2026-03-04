@@ -6,7 +6,7 @@ import {
 } from "discord.js";
 import { SlashCommand } from "@/types/command";
 
-function createTextDisplay(date: string, time: string, format: string, elo: string) {
+function createComponents(date: string, time: string, format: string, elo: string) {
     return new TextDisplayBuilder()
         .setContent(`📅 **${date}**\n🕐 ${time} CET\n⚔️ ${format}\n✅ **${elo}**\n✉️ DM + OP.GG`);
 }
@@ -20,7 +20,7 @@ export async function execute(interaction: ChatInputCommandInteraction) {
     const elo = interaction.options.get("elo")?.value as string;
 
     await interaction.followUp({
-        components: [createTextDisplay(date, time, format, elo)],
+        components: [createComponents(date, time, format, elo)],
         flags: MessageFlags.IsComponentsV2,
     });
 }
@@ -51,5 +51,5 @@ export const data = new SlashCommandBuilder()
 export const scrimSearchMsg: SlashCommand = {
     commandData: data,
     commandExecute: execute,
-    commandComponents: createTextDisplay,
+    commandComponents: createComponents,
 };
