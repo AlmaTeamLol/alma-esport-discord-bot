@@ -1,3 +1,4 @@
+import { SlashCommand } from "@/types/command";
 import {
     ContainerBuilder,
     ChannelType,
@@ -13,7 +14,19 @@ import {
 } from "discord.js";
 import { config } from "@/config";
 
-function createContainer(team: string, date: string, time: string, format: string, side: string, enemyMultiGg: string, almaMultiGg: string, drafter: string) {
+/**
+ * The create components function for the scrim info command.
+ * @param team - The team name.
+ * @param date - The scrim start date.
+ * @param time - The scrim start time.
+ * @param format - The scrim format.
+ * @param side - The side ALMA will take for Game 1.
+ * @param enemyMultiGg - The link redirecting to the enemy Multi GG page.
+ * @param almaMultiGg - The link redirecting to the ALMA Multi GG page.
+ * @param drafter - The link redirecting to the Drafter page.
+ * @returns A new ContainerBuilder object.
+ */
+function createComponents(team: string, date: string, time: string, format: string, side: string, enemyMultiGg: string, almaMultiGg: string, drafter: string) {
     const scrimInfoTextDisplay = new TextDisplayBuilder()
         .setContent(`⚔️ **${team}** | SCRIM INFO ⚔️`);
 
@@ -58,7 +71,12 @@ function createContainer(team: string, date: string, time: string, format: strin
     return container;
 }
 
-export async function execute(interaction: ChatInputCommandInteraction) {
+/**
+ * The execute function for the scrim info command.
+ * @param interaction - The interaction that triggered the command.
+ * @returns A promise that resolves when the command is executed.
+ */
+async function execute(interaction: ChatInputCommandInteraction) {
     await interaction.deferReply();
 
     const team = interaction.options.get("team")?.value as string;
@@ -71,13 +89,17 @@ export async function execute(interaction: ChatInputCommandInteraction) {
     const drafter = interaction.options.get("drafter")?.value as string;
 
     await interaction.followUp({
-        components: [createContainer(team, date, time, format, side, enemyMultiGg, almaMultiGg, drafter)],
+        components: [createComponents(team, date, time, format, side, enemyMultiGg, almaMultiGg, drafter)],
         flags: MessageFlags.IsComponentsV2,
 
     });
 }
 
-export const data = new SlashCommandBuilder()
+/**
+ * The data for the scrim info command.
+ * @returns A new SlashCommandBuilder object.
+ */
+const data = new SlashCommandBuilder()
     .setName("scrim-info")
     .setDescription("Provides information about the current scrim.")
     .addStringOption(option => option.setName("team")
@@ -117,3 +139,13 @@ export const data = new SlashCommandBuilder()
         .setDescription("Channel where the scrim information will be played")
         .addChannelTypes(ChannelType.GuildText))
     .setContexts(InteractionContextType.Guild);
+
+/**
+ * The scrim info command.
+ * @returns A SlashCommand object.
+ */
+export const scrimInfo: SlashCommand = {
+    commandData: data,
+    commandExecute: execute,
+    commandComponents: createComponents,
+};

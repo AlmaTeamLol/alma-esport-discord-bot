@@ -1,8 +1,12 @@
-import { Client, Collection, GatewayIntentBits } from "discord.js";
-import { config } from "./config";
+import { commands } from "@/commands";
+import { config } from "@/config";
 import ready from "@/listeners/ready";
 import interactionCreate from "@/listeners/interactionCreate";
-import { commands } from "@/commands";
+import {
+    Client,
+    Collection,
+    GatewayIntentBits
+} from "discord.js";
 
 const client = new Client({
     intents: [
@@ -17,8 +21,8 @@ ready(client);
 
 client.commands = new Collection();
 
-for (const command of Object.entries(commands)) {
-    client.commands.set(command[1].data.name, command[1]);
+for (const command of commands) {
+    client.commands.set(command.commandData.name, command);
 }
 
 interactionCreate(client);

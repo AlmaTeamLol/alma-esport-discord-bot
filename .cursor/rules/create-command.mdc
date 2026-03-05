@@ -5,46 +5,112 @@ alwaysApply: true
 
 # Create Command (€createcommand)
 
-When the user's prompt contains **€createcommand**, create a new slash command file and register it. Follow this workflow exactly.
+When the user's prompt contains **€createcommand**, create a new slash command file and register it. Follow this workflow exactly. Use the **`SlashCommand`** type from `@/types/command` and the structure of `src/commands/scriminfo.ts` / `src/commands/ping.ts` as reference.
 
 ## 1. Gather required information
 
-Before creating any file, **ask the user** for these three values (if not already provided):
+Before creating any file, **ask the user** for these values (if not already provided):
 
 - **filename** – Name of the new file in `src/commands/` (e.g. `mycommand` → `src/commands/mycommand.ts`). Do not include `.ts`.
 - **commandName** – Value passed to `setName()` (slash command name, e.g. `my-command`).
 - **commandDescription** – Value passed to `setDescription()` (short description shown in Discord).
+- **commandComponents** – *Does this command need message components?* (e.g. containers, sections, buttons, text display). If yes, add the component scaffolding so the user can implement the creation logic.
+
+**Export name:** Use the filename in **camelCase** (e.g. `mycommand` → `myCommand`).
 
 ## 2. Create the command file
 
-Create `src/commands/<filename>.ts` with this **exact** content, replacing only the placeholders:
+### 2a. Without commandComponents (minimal)
+
+Create `src/commands/<filename>.ts` with:
 
 ```typescript
+import { SlashCommand } from "@/types/command";
 import {
-    CommandInteraction,
+    ChatInputCommandInteraction,
     SlashCommandBuilder
 } from "discord.js";
 
-export async function execute(interaction: CommandInteraction) {
+async function execute(interaction: ChatInputCommandInteraction) {
 }
 
-export const data = new SlashCommandBuilder()
+const data = new SlashCommandBuilder()
     .setName("<commandName>")
     .setDescription("<commandDescription>");
+
+export const <exportName>: SlashCommand = {
+    commandData: data,
+    commandExecute: execute,
+};
 ```
 
-- Replace `<commandName>` with the user's **commandName** (e.g. `"my-command"`).
-- Replace `<commandDescription>` with the user's **commandDescription** (e.g. `"Does something useful"`).
+### 2b. With commandComponents (scaffolding for component logic)
+
+If the user said the command **needs commandComponents**, create `src/commands/<filename>.ts` with this structure so they can implement the component creation logic. Use `src/commands/scriminfo.ts` (ContainerBuilder, sections, buttons) and `src/commands/scrimsearchmsg.ts` (TextDisplayBuilder) as reference.
+
+- **Imports:** Add at least `MessageFlags` and a builder you need (`TextDisplayBuilder` for simple content, or `ContainerBuilder`, `SectionBuilder`, `ButtonBuilder`, `ThumbnailBuilder`, etc. from `discord.js`, and `config` from `@/config` if using theme like scriminfo).
+- **Component builder:** A function that takes one parameter per command option (same order as in `data`) and returns a component or array of components. Stub it so it compiles; the user implements the body.
+- **execute:** `deferReply()`, read option values with `interaction.options.get("option-name")?.value as string`, then `followUp({ components: [createComponents(...)], flags: MessageFlags.IsComponentsV2 })`.
+- **Export:** Include `commandComponents: createComponents` in the `SlashCommand` object.
+
+**Template with commandComponents (stub — user implements body):**
+
+```typescript
+import { SlashCommand } from "@/types/command";
+import {
+    ChatInputCommandInteraction,
+    MessageFlags,
+    SlashCommandBuilder,
+    TextDisplayBuilder
+} from "discord.js";
+
+// Implement component creation here. Add one parameter per command option.
+// For rich layouts use ContainerBuilder, SectionBuilder, ButtonBuilder (see scriminfo.ts).
+// For simple text use TextDisplayBuilder (see scrimsearchmsg.ts).
+function createComponents(/* add params matching your command options */) {
+    return new TextDisplayBuilder()
+        .setContent(""); // replace with your content
+}
+
+async function execute(interaction: ChatInputCommandInteraction) {
+    await interaction.deferReply();
+
+    // Get option values — add one line per option and pass to createComponents
+    // const option1 = interaction.options.get("option1")?.value as string;
+
+    await interaction.followUp({
+        components: [createComponents(/* pass option values */)],
+        flags: MessageFlags.IsComponentsV2,
+    });
+}
+
+const data = new SlashCommandBuilder()
+    .setName("<commandName>")
+    .setDescription("<commandDescription>");
+// .addStringOption(...) etc.
+
+export const <exportName>: SlashCommand = {
+    commandData: data,
+    commandExecute: execute,
+    commandComponents: createComponents,
+};
+```
+
+- Replace `<commandName>`, `<commandDescription>`, `<exportName>` as in 2a.
+- Leave placeholders (params, option getters, `createComponents(...)` call) so the user can add their option names and implement the component logic. If they already provided option names, fill those in.
 
 ## 3. Update the commands index
 
 Edit `src/commands/index.ts`:
 
-1. Add an import: `import * as <filename> from "@/commands/<filename>";` (use the same `filename` as the new file, without `.ts`).
-2. Add `<filename>` to the `commands` array export (e.g. `commands = [..., <filename>];`).
+1. Add: `import { <exportName> } from "@/commands/<filename>";`
+2. Add `<exportName>` to the `commands` array.
 
 Keep existing imports and array entries; only add the new command.
 
 ## Reference
 
-Template is based on `src/commands/scrimsearchmsg.ts`: minimal slash command with `execute`, `data` (SlashCommandBuilder with `setName` and `setDescription`), and Discord.js types.
+- **Types:** `src/types/command.d.ts` — `SlashCommand` has `commandData`, `commandExecute`, and optional `commandComponents`.
+- **No components:** `src/commands/ping.ts`.
+- **With components (container/sections/buttons):** `src/commands/scriminfo.ts` — `createContainer(optionValues...)` returns `ContainerBuilder`, used in `followUp({ components: [createContainer(...)] })`.
+- **With components (text only):** `src/commands/scrimsearchmsg.ts` — `createTextDisplay(optionValues...)` returns `TextDisplayBuilder`, used in `followUp({ components: [createTextDisplay(...)] })`.
