@@ -1,8 +1,12 @@
-import { Client, Collection, GatewayIntentBits } from "discord.js";
-import { config } from "./config";
+import { commands } from "@/commands";
+import { config } from "@/config";
 import ready from "@/listeners/ready";
 import interactionCreate from "@/listeners/interactionCreate";
-import { commands } from "@/commands";
+import {
+    Client,
+    Collection,
+    GatewayIntentBits
+} from "discord.js";
 
 const client = new Client({
     intents: [

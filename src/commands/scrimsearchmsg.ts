@@ -1,17 +1,30 @@
+import { SlashCommand } from "@/types/command";
 import {
     ChatInputCommandInteraction,
     MessageFlags,
     SlashCommandBuilder,
     TextDisplayBuilder
 } from "discord.js";
-import { SlashCommand } from "@/types/command";
 
+/**
+ * The create components function for the scrim search msg command.
+ * @param date - The desired start date.
+ * @param time - The desired start time.
+ * @param format - The desired format.
+ * @param elo - The desired Elo.
+ * @returns A new TextDisplayBuilder object.
+ */
 function createComponents(date: string, time: string, format: string, elo: string) {
     return new TextDisplayBuilder()
         .setContent(`📅 **${date}**\n🕐 ${time} CET\n⚔️ ${format}\n✅ **${elo}**\n✉️ DM + OP.GG`);
 }
 
-export async function execute(interaction: ChatInputCommandInteraction) {
+/**
+ * The execute function for the scrim search msg command.
+ * @param interaction - The interaction that triggered the command.
+ * @returns A promise that resolves when the command is executed.
+ */
+async function execute(interaction: ChatInputCommandInteraction) {
     await interaction.deferReply();
 
     const date = interaction.options.get("date")?.value as string;
@@ -25,7 +38,11 @@ export async function execute(interaction: ChatInputCommandInteraction) {
     });
 }
 
-export const data = new SlashCommandBuilder()
+/**
+ * The data for the scrim search msg command.
+ * @returns A new SlashCommandBuilder object.
+ */
+const data = new SlashCommandBuilder()
     .setName("scrim-search-msg")
     .setDescription("Generates a message to search for scrims.")
     .addStringOption(option => option.setName("date")
@@ -48,6 +65,10 @@ export const data = new SlashCommandBuilder()
         )
         .setRequired(true));
 
+/**
+ * The scrim search msg command.
+ * @returns A SlashCommand object.
+ */
 export const scrimSearchMsg: SlashCommand = {
     commandData: data,
     commandExecute: execute,

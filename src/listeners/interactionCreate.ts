@@ -1,6 +1,10 @@
-import { Client, Events, Interaction } from "discord.js";
 import { SlashCommand } from "@/types/command";
+import { Client, Events, Interaction } from "discord.js";
 
+/**
+ * The interaction create listener.
+ * @param client - The client.
+ */
 export default (client: Client): void => {
     client.on(Events.InteractionCreate, async (interaction: Interaction) => {
         if (!interaction.isCommand()) {
